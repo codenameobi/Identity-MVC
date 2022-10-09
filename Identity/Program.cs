@@ -27,6 +27,9 @@ builder.Services.Configure<IdentityOptions>(opts =>
 
 builder.Services.AddControllersWithViews();
 
+//Change the Default Login URL in Identity
+builder.Services.ConfigureApplicationCookie(opts => opts.LoginPath = "/Authenticate/Login");
+
 // Add Identity Custom Password, Username and Email Policies.
 builder.Services.AddTransient<IPasswordValidator<AppUser>, CustomPasswordPolicy>();
 builder.Services.AddTransient<IUserValidator<AppUser>, CustomUsernameEmailPolicy>();

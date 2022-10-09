@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Identity.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Identity.Controllers;
 
@@ -13,10 +14,10 @@ public class HomeController : Controller
         _logger = logger;
     }
 
+    [Authorize]
     public IActionResult Index()
     {
-        ViewData["Message"] = "Controller is Working";
-        return View();
+        return View((object)"Hello");
     }
 
     public IActionResult Privacy()
