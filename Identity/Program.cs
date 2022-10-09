@@ -1,4 +1,5 @@
-﻿using Identity.Models;
+﻿using Identity.IdentityPolicy;
+using Identity.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,7 +17,19 @@ builder.Services.AddIdentity<AppUser, IdentityRole>()
     .AddEntityFrameworkStores<AppIdentityDbContext>()
     .AddDefaultTokenProviders();
 
+builder.Services.Configure<IdentityOptions>(opts =>
+{
+    opts.User.RequireUniqueEmail = true;
+    opts.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyz";
+    opts.Password.RequiredLength = 8;
+    opts.Password.RequireLowercase = true;
+});
+
 builder.Services.AddControllersWithViews();
+
+// Add Identity Custom Password, Username and Email Policies.
+builder.Services.AddTransient<IPasswordValidator<AppUser>, CustomPasswordPolicy>();
+builder.Services.AddTransient<IUserValidator<AppUser>, CustomUsernameEmailPolicy>();
 
 var app = builder.Build();
 
