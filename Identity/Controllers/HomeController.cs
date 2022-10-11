@@ -2,33 +2,30 @@
 using Microsoft.AspNetCore.Mvc;
 using Identity.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace Identity.Controllers;
 
 public class HomeController : Controller
 {
-    private readonly ILogger<HomeController> _logger;
+    private UserManager<AppUser> _userManager;
 
-    public HomeController(ILogger<HomeController> logger)
+    public HomeController(UserManager<AppUser> userManager)
     {
-        _logger = logger;
+        _userManager = userManager;
     }
 
     [Authorize]
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
-        return View((object)"Hello");
+        AppUser user = await _userManager.GetUserAsync(HttpContext.User);
+        string message = "Hello " + user.UserName;
+        return View((object)message);
     }
 
     public IActionResult Privacy()
     {
         return View();
-    }
-
-    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    public IActionResult Error()
-    {
-        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
 }
 
