@@ -2,6 +2,11 @@
 @{
     ViewData["Title"] = "Home Page";
 }
-
+<h1 class="bg-info text-white">Index</h1>
 @Model
+
+@if (User?.Identity?.IsAuthenticated ?? false)
+{
+    <a asp-controller="Account" asp-action="Logout" class="btn btn-danger">Logout</a>
+}
 

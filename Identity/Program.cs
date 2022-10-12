@@ -32,6 +32,15 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddTransient<IPasswordValidator<AppUser>, CustomPasswordPolicy>();
 builder.Services.AddTransient<IUserValidator<AppUser>, CustomUsernameEmailPolicy>();
 
+
+// Set ASP>NET CORE IDENTITY COOKIE  to expire login in 20 miutes
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.Cookie.Name = ".AspNetCore.Identity.Application";
+    options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
+    options.SlidingExpiration = true;
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
