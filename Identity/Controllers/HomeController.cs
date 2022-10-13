@@ -15,7 +15,7 @@ public class HomeController : Controller
         _userManager = userManager;
     }
 
-    [Authorize]
+    [Authorize(Roles = "Users")]
     public async Task<IActionResult> Index()
     {
         AppUser user = await _userManager.GetUserAsync(HttpContext.User);
