@@ -11,15 +11,29 @@
 <form asp-action="Update" method="post">
     <div class="form-group">
         <label asp-for="Id"></label>
-        <input asp-for="Id" class="form-control" disabled/>
+        <input asp-for="Id" class="form-control" disabled />
     </div>
     <div class="form-group">
         <label asp-for="Email"></label>
-        <input asp-for="Email" class="form-control"/>
+        <input asp-for="Email" class="form-control" />
     </div>
     <div class="form-group">
         <label for="password">Password</label>
-        <input name="password" class="form-control"/>
+        <input name="password" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="Age"></label>
+        <input asp-for="Age" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="Country"></label>
+        <select asp-for="Country" class="form-control" asp-items="@new SelectList(Enum.GetNames(typeof(Country)))">
+            <option selected disabled value="Select">Select Country</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label asp-for="Salary"></label>
+        <input asp-for="Salary" class="form-control" />
     </div>
     <button type="submit" class="btn btn-primary">Save</button>
 </form>

@@ -36,38 +36,33 @@ namespace Identity.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Update(string id, string email, string password)
+        public async Task<IActionResult> Update(string id, string email, string password, int age, string country, string salary)
         {
             AppUser user = await _userManager.FindByIdAsync(id);
             if (user != null)
             {
-                IdentityResult validEmail = null;
-
                 if (!string.IsNullOrEmpty(email))
-                {
-                    validEmail = await _userValidator.ValidateAsync(_userManager, user);
-                    if (validEmail.Succeeded)
-                        user.Email = email;
-                    else
-                        Errors(validEmail);
-                }
+                   user.Email = email;
                 else
                     ModelState.AddModelError("", "Email cannot be empty");
-
-                IdentityResult validPass = null;
-
-                if (!string.IsNullOrEmpty(password))
-                {
-                    validPass = await _passwordValidator.ValidateAsync(_userManager, user, password);
-                    if (validPass.Succeeded)
-                        user.PasswordHash = _passwordHasher.HashPassword(user, password);
-                    else
-                        Errors(validPass);
-                }
+                if (!string.IsNullOrEmpty(password))         
+                   user.PasswordHash = _passwordHasher.HashPassword(user, password); 
                 else
                     ModelState.AddModelError("", "Password cannot be empty");
 
-                if (validEmail != null && validPass != null && validEmail.Succeeded && validPass.Succeeded)
+                user.Age = age;
+
+                Country myCountry;
+                Enum.TryParse(country, out myCountry);
+                user.Country = myCountry;
+
+                if (!string.IsNullOrEmpty(salary))
+                    user.Salary = salary;
+                else
+                    ModelState.AddModelError("", "Salary cannot be empty");
+
+
+                if (!string.IsNullOrEmpty(email) && !string.IsNullOrEmpty(password) && !string.IsNullOrEmpty(salary))
                 {
                     IdentityResult result = await _userManager.UpdateAsync(user);
                     if (result.Succeeded)
@@ -90,7 +85,10 @@ namespace Identity.Controllers
                 AppUser appUser = new AppUser
                 {
                     UserName = user.Name,
-                    Email = user.Email
+                    Email = user.Email,
+                    Country = user.Country,
+                    Age = user.Age,
+                    Salary = user.Salary
                 };
 
                 IdentityResult result = await _userManager.CreateAsync(appUser, user.Password);

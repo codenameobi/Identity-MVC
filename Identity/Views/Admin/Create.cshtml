@@ -24,6 +24,20 @@
         <label asp-for="Password"></label>
         <input asp-for="Password" class="form-control" />
     </div>
+    <div class="form-group">
+        <label asp-for="Age"></label>
+        <input asp-for="Age" class="form-control"/>
+    </div>
+    <div class="form-group">
+        <label asp-for="Country"></label>
+        <select asp-for="Country" class="form-control" asp-items="@new SelectList(Enum.GetNames(typeof(Country)))">
+            <option selected disabled value="Select">Select Country</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label asp-for="Salary"></label>
+        <input asp-for="Salary" class="form-control"/>
+    </div>
     <button type="submit" class="btn btn-primary">Create</button>
 </form>
 
