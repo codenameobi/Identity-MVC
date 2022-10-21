@@ -11,9 +11,12 @@ namespace Identity.Controllers
 	public class ClaimsController : Controller
 	{
 		private UserManager<AppUser> _userManager;
-		public ClaimsController(UserManager<AppUser> userManager)
+		private IAuthorizationService _authService;
+
+		public ClaimsController(UserManager<AppUser> userManager, IAuthorizationService authService)
 		{
-			_userManager = userManager; 
+			_userManager = userManager;
+			_authService = authService;
 		}
 
 		public ViewResult Index() => View(User?.Claims);
@@ -60,6 +63,25 @@ namespace Identity.Controllers
 			foreach (IdentityError error in result.Errors)
 				ModelState.AddModelError("", error.Description);
         }
+
+		//only authorize users that match the AspManager policy
+		[Authorize(Policy = "AspManager")]
+		public IActionResult Project() => View("Index", User?.Claims);
+
+		//only authorize user with name Tom
+		[Authorize(Policy = "AllowTom")]
+		public ViewResult TomFiles() => View("Index", User?.Claims);
+
+		public async Task<IActionResult> PrivateAccess(string title)
+		{
+			string[] allowedUsers = { "admin", "user" };
+			AuthorizationResult authorized = await _authService.AuthorizeAsync(User, allowedUsers, "PrivateAccess");
+
+			if (authorized.Succeeded)
+				return View("Index", User?.Claims);
+			else
+				return new ChallengeResult();
+		}
     }
 }
 

@@ -1,5 +1,7 @@
-﻿using Identity.IdentityPolicy;
+﻿using Identity.CustomPolicy;
+using Identity.IdentityPolicy;
 using Identity.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -39,6 +41,34 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.Cookie.Name = ".AspNetCore.Identity.Application";
     options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
     options.SlidingExpiration = true;
+});
+
+//set Identity Policy
+
+builder.Services.AddAuthorization(opts => {
+    opts.AddPolicy("AspManager", policy =>
+    {
+        policy.RequireRole("Manager");
+        policy.RequireClaim("Coding-Skill", "ASP.NET Core MVC");
+    });
+});
+
+builder.Services.AddTransient<IAuthorizationHandler, AllowUsersHandler>();
+builder.Services.AddAuthorization(opts =>
+{
+    opts.AddPolicy("AllowTom", policy =>
+    {
+        policy.AddRequirements(new AllowUserPolicy("admin"));
+    });
+});
+
+builder.Services.AddTransient<IAuthorizationHandler, AllowPrivateHandler>();
+builder.Services.AddAuthorization(opts =>
+{
+    opts.AddPolicy("PrivateAccess", policy =>
+    {
+        policy.AddRequirements(new AllowPrivatePolicy());
+    });
 });
 
 var app = builder.Build();
